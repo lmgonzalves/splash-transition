@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Splash Transition</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+//- Background image and button
+<div class="background-image"></div>
+<button>Animate</button>
+
+//- Some variables to help with maths
+- var circlesNumber = 5;
+- var strokeWidth = 150;
+- var radius = 100;
+- var width = radius * 2;
+- var height = radius * 2;
+- var left = width / 2;
+- var top = height / 2;
+
+//- Mixin to build a circle (SVG path)
+//- Formula taken from this answer: http://stackoverflow.com/a/10477334
+mixin circle(className)
+    <path class="#{className}" d="M #{left} #{top} m -#{radius} 0 a #{radius} #{radius} 0 1 0 #{radius * 2} 0 a #{radius} #{radius} 0 1 0 -#{radius * 2} 0"/>
+
+//- Center circle
+<svg class="svg-center" width="#{width}" height="#{height}">
+    + circle('path-center')
+</svg>
+
+//- Reset some variables to build the other circles
+- width = 10000;
+- height = 5000;
+- left = width / 2;
+- top = height / 2;
+- radius += strokeWidth / 2 - 1;
+
+//- Very big SVG
+<svg class="svg-borders" width="#{width}" height="#{height}">
+
+    //- Build the circles, increasing the radius at each iteration
+    while circlesNumber--
+        + circle('path-borders')
+        - radius += strokeWidth - 1;
+</svg>
+
+<script src="js/scripts.js"></script>
+</body>
+</html>

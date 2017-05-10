@@ -1,0 +1,157 @@
+/* Basic styles */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: sans-serif;
+  overflow: hidden;
+}
+
+
+/* Background image */
+
+.background-image {
+  width: 100%;
+  height: 100%;
+  background-image: url('../img/yffgke3y4f8-tim-stief.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  transform: scale(1.5);
+}
+
+
+/* SVG */
+
+svg {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.svg-center {
+  border-radius: 100%;
+}
+
+path {
+  fill: none;
+  stroke: black;
+  stroke-width: 150px;
+
+  &.path-center {
+    stroke-width: 200px;
+  }
+}
+
+
+/* Transitions */
+
+.background-image,
+.svg-borders,
+.path-center,
+.path-borders {
+  transition: 2s cubic-bezier(0.770, 0.000, 0.175, 1.000); /* easeInOutQuart */
+}
+
+
+/* Open state */
+
+.open-state {
+
+  // Scaling down the image
+  .background-image {
+    transform: scale(1);
+  }
+
+  // Rotating SVG paths (except the center circle)
+  .svg-borders {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  // Animating the center circle
+  .path-center {
+    stroke-width: 400px;
+  }
+}
+
+
+/* Drawing SVG paths */
+
+// Same variables used in HTML
+$circlesNumber: 6;
+$strokeWidth: 150;
+$radius: 100;
+
+// PI value (approximately)
+$pi: 3.15;
+
+// A big length
+$maxLen: 10000;
+
+// Loop to generate convenient stroke-* values
+@while $circlesNumber > 0 {
+
+  // Calculate the SVG path length (approximately)
+  $currentRadius: $radius + ($circlesNumber) * $strokeWidth - $strokeWidth / 2;
+  $len: 2 * $pi * $currentRadius;
+
+  // Draw the entire path
+  .path-borders:nth-child(#{$circlesNumber}) {
+    stroke-dashoffset: $maxLen;
+    stroke-dasharray: $maxLen 0 $len;
+  }
+
+  .open-state {
+
+    // "Erase" the path, with alternating direction
+    .path-borders:nth-child(#{$circlesNumber}) {
+      @if ($circlesNumber % 2 == 0) {
+        stroke-dasharray: $maxLen 0 0;
+      } @else {
+        stroke-dasharray: $maxLen $len $len;
+      }
+    }
+  }
+
+  // Next iteration
+  $circlesNumber: $circlesNumber - 1;
+}
+
+
+/* Toggle button */
+
+button {
+  position: fixed;
+  display: inline-block;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  background-color: #0277bd;
+  border: none;
+  text-transform: uppercase;
+  padding: 10px 30px;
+  border-radius: 2px;
+  z-index: 1;
+  transition: 0.3s;
+  box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+
+  &:hover {
+    background-color: lighten(#0277bd, 5%);
+  }
+
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
